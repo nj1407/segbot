@@ -28,6 +28,10 @@ add_executable(test_led_control_server test/test.cpp)
 add_dependencies(test_led_control_server ${catkin_EXPORTED_TARGETS} ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(test_led_control_server ${catkin_LIBRARIES})
 
+add_executable(blocked_moniter src/blocked_moniter.cpp)
+add_dependencies(blocked_moniter ${catkin_EXPORTED_TARGETS} ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(blocked_moniter ${catkin_LIBRARIES})
+
 install(TARGETS
           led_control_server
           test_led_control_server
@@ -36,3 +40,5 @@ install(TARGETS
 install(DIRECTORY
           launch/
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch)
+
+
