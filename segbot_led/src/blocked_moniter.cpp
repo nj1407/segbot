@@ -8,10 +8,11 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <nav_msgs/Path.h>
+#include <move_base_msgs/MoveBaseAction.h>
 #include <ros/ros.h>
 #include <std_msgs/Char.h>
 #include <tf/tf.h>
-
+#include <actionlib/server/simple_action_server.h>
 /*******************************************************
 *                   segbot_led Headers                 *
 ********************************************************/
@@ -33,6 +34,7 @@ ros::Publisher signal_pub;
 
 ros::Subscriber global_path;
 ros::Subscriber robot_pose;
+ros::Subscriber status;
 
 nav_msgs::Path current_path;
 geometry_msgs::Pose current_pose;
@@ -58,6 +60,17 @@ void pose_cb(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg)
     heard_pose = true;
 }
 
+//update status
+//TODO empty intially so can't be blocked
+//else check what status code is
+//status code 1 moving in progress
+//status code 4 is failed to get a planned
+//status code 3 is code succeded
+void status_cb(const actionlib_msgs::status)
+{
+    
+}
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "turn_monitor");
@@ -75,13 +88,14 @@ int main(int argc, char **argv)
     // Sets up subscribers
     global_path = n.subscribe("/move_base/GlobalPlanner/plan", 1, path_cb);
     robot_pose = n.subscribe("/amcl_pose", 1, pose_cb);
-
+    status = n.subsribe("/move_base/status", 1, status_cb); 
+    
     // Sets up action client
     actionlib::SimpleActionClient<bwi_msgs::LEDControlAction> ac("led_control_server", true);
     ac.waitForServer();
     
     bwi_msgs::LEDControlGoal goal;
-
+    move_base_msgs::MoveBaseGoal goal;
     // Waits for current path and pose to update
     while(!heard_path || !heard_pose) 
     {
@@ -120,6 +134,7 @@ int main(int argc, char **argv)
                     ROS_INFO("blocked");
               
         }
+        
         loop_rate.sleep();
     }
 
