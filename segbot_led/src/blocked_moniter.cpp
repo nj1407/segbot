@@ -138,8 +138,8 @@ int main(int argc, char **argv)
         // TODO: Choose max dist rather then halving plan
         // Iterates through the first half of points in the global path and determines if any major
         // changes in orientation are coming.
-        ROS_INFO("r_goal status: %d", r_goal.status);
-        if(current_path.poses.size() == 0){
+        //ROS_INFO_STREAM("r_goal status: %d", r_goal.status);
+        if(current_path.poses.size() == 0 && r_goal.status == 4){
                   // && r_goal.status == 4  
                   
                     gui_srv.request.type = 0; 
