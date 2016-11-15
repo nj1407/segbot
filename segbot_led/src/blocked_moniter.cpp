@@ -122,17 +122,16 @@ int main(int argc, char **argv)
 
     while(ros::ok())
     {
-            ROS_INFO("test");
         // Updates current path and pose
         ros::spinOnce();
               
         // TODO: Choose max dist rather then halving plan
         // Iterates through the first half of points in the global path and determines if any major
         // changes in orientation are coming.
-        ROS_INFO_STREAM(r_goal.status_list[0].status);
+        //ROS_INFO_STREAM(r_goal.status_list[0].status);
         if(current_path.poses.size() == 0 && r_goal.status_list[0].status == 4 ){
                   // && r_goal.status == 4  
-                  
+                    goal.type.led_animations = bwi_msgs::LEDAnimations::BLOCKED;
                     gui_srv.request.type = 0; 
                     gui_srv.request.message = "Blocked"; 
                     gui_client.call(gui_srv);
