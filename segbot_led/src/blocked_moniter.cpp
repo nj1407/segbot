@@ -27,6 +27,7 @@
 #include "bwi_msgs/QuestionDialog.h"
 #include "bwi_services/SpeakMessage.h"
 #include "actionlib_msgs/GoalStatus.h"
+#include "actionlib_msgs/GoalID.h"  //edit
 
 /*******************************************************
 *                 Global Variables                     *
@@ -37,18 +38,24 @@ ros::Subscriber global_path;
 ros::Subscriber robot_pose;
 ros::Subscriber status;
 ros::Subscriber robot_goal;
+//edit
+ros::Subscriber robot_id;
+ros::Subscriber id_status;
+//end edit
 
 nav_msgs::Path current_path;
 geometry_msgs::Pose current_pose;
 
 //edit
-actionlib_msgs::GoalStatus r_goal;
+actionlib_msgs::GoalStatus r_goal; 
+actionlib_msgs::GoalID id;  //edit
 //end edit
 
 
 bool heard_path = false;
 bool heard_pose = false;
 bool heard_goal = false;
+bool heard_id = false; //edit
 
 /*******************************************************
 *                 Callback Functions                   *
@@ -73,6 +80,14 @@ void status_cb(const actionlib_msgs::GoalStatus::ConstPtr& msg_goal)
     r_goal = *msg_goal;
     heard_goal = true;
 }
+
+//edit
+void id_cb(const actionlib_msgs::GoalID::ConstPtr& msg_id)
+{
+    id = *msg_id;
+    heard_id = true;
+}
+//end edit
 
 // Updates the current pose
 void pose_cb(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg)
@@ -102,7 +117,7 @@ int main(int argc, char **argv)
     global_path = n.subscribe("/move_base/GlobalPlanner/plan", 1, path_cb);
     robot_pose = n.subscribe("/amcl_pose", 1, pose_cb);
     robot_goal = n.subscribe("/move_base/status", 1, status_cb); 
-    
+    robot_id = n.subscribe("/move_base/id", 1, id_cb);
     
     
     // Sets up action client
@@ -113,7 +128,7 @@ int main(int argc, char **argv)
     //move_base_msgs::MoveBaseGoal goal;
     // Waits for current path and pose to update
     while(!heard_path || !heard_pose) 
-    {
+    { 
         ros::spinOnce();
     }
 
@@ -138,8 +153,8 @@ int main(int argc, char **argv)
         // TODO: Choose max dist rather then halving plan
         // Iterates through the first half of points in the global path and determines if any major
         // changes in orientation are coming.
-        ROS_INFO("r_goal status: %d", r_goal.status);
-        if(current_path.poses.size() == 0){
+       // ROS_INFO_STREAM("r_goal status: %d", r_goal.status);
+        if(current_path.poses.size() == 0 && (r_goal.goal_id.id) == "4"){
                   // && r_goal.status == 4  
                   
                     gui_srv.request.type = 0; 
