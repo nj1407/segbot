@@ -254,9 +254,11 @@ public:
           break;
         }
 
+		//ROS_INFO("GOAL BEING SENT IS: " << (goal->type.led_animations));
         // Determines which animation to execute based on goal->type value
         switch(goal->type.led_animations)
         {
+		
           // Left Turn Sequential Animation
 /*          case bwi_msgs::LEDAnimations::LEFT_TURN:
             {
@@ -1139,6 +1141,249 @@ public:
               }
               break;
             }
+
+            case bwi_msgs::LEDAnimations::TEST_VALUES:
+            {
+            
+          //ROS_INFO("YOU ARE IN THE CORRECT METHOD.");
+              // Executes as long as timeout has not been reached, Goal is not Preempted, and ROS is OK
+              while(!as_.isPreemptRequested() && !timeout && ros::ok())
+              {
+                // Creates an animation of leds which travels up along the strip
+
+                ros::Duration time_running = ros::Time::now() - start;
+                feedback_.time_running = time_running;
+                as_.publishFeedback(feedback_);
+                int i = front_right_beam_end;
+                int count = 0;
+                while(count < 25)
+                {
+                
+                
+                  leds.setRGB(i, 0, 0, 20);
+                  leds.setRGB(i-1, 0, 0, 2);
+                  leds.setRGB(i-2, 0, 0, 20);
+                  usleep(1000);
+                  leds.flush();
+                  count++;
+                  i-=3;
+                }
+                
+                /*leds.setRGB(front_right_beam_end + 1, 200, 0, 0);
+                leds.setRGB(front_right_beam_end, 0, 200, 0);
+                leds.setRGB(back_right_beam_end, 0, 0, 200);
+                leds.setRGB(back_left_beam_start, 200, 0, 200);*/
+                leds.flush();
+                usleep(100000);
+
+              }
+              break;
+            }
+            
+            case bwi_msgs::LEDAnimations::FORWARD:
+            {
+				  leds.clear();
+				  //ROS_INFO("YOU ARE IN THE CORRECT METHOD.");
+              // Executes as long as timeout has not been reached, Goal is not Preempted, and ROS is OK
+              while(!as_.isPreemptRequested() && !timeout && ros::ok())
+              {
+                // Creates an animation of leds which travels up along the strip
+
+                ros::Duration time_running = ros::Time::now() - start;
+                feedback_.time_running = time_running;
+                as_.publishFeedback(feedback_);
+                int j = circular_u_end+1;
+                int k = circular_u_start-(1+(top_of_u_end-top_of_u_start));
+                int l = top_of_u_end+1;
+                int m = top_of_u_start-1;
+
+                for (int i = 1; i <= 10;)
+                {
+                  // Terminate goal if preempted, timeout is reached, or ros fails
+                  if(as_.isPreemptRequested() || timeout || !ros::ok()) { break; }
+
+                  if (i == 1)
+                  {
+                    leds.setHSV(j, 22, 1, .1);
+                    leds.setHSV(j-1, 22, 1, .1);
+                    leds.setHSV(j-2, 22, 1, .1);
+                    leds.setHSV(j-3, 22, 1, .1);
+
+                    leds.setHSV(j-10, 22, 1, .1);
+                    leds.setHSV(j-11, 22, 1, .1);
+                    leds.setHSV(j-12, 22, 1, .1);
+                    leds.setHSV(j-13, 22, 1, .1);
+
+                    leds.setHSV(j-20, 22, 1, .1);
+                    leds.setHSV(j-21, 22, 1, .1);
+                    leds.setHSV(j-22, 22, 1, .1);
+                    leds.setHSV(j-23, 22, 1, .1);
+
+                    leds.setHSV(l, 22, 1, .1);
+                    leds.setHSV(l-1, 22, 1, .1);
+                    leds.setHSV(l-2, 22, 1, .1);
+                    leds.setHSV(l-3, 22, 1, .1);
+
+                    i+=4;
+                    j-=4;
+                    l-=4;
+                  }
+                  else
+                  {
+                    leds.setHSV(j, 22, 1, .1);
+                    leds.setHSV(j-10, 22, 1, .1);
+                    leds.setHSV(j-20, 22, 1, .1);
+                    leds.setHSV(l, 22, 1, .1);
+                    i+=1;
+                    j-=1;
+                    l-=1;
+                  }
+
+                  if (i > 1)
+                  {
+                    leds.setRGB(j+4, 0, 0, 0);
+                    leds.setRGB((j-10)+4, 0, 0, 0);
+                    leds.setRGB((j-20)+4, 0, 0, 0);
+                    leds.setRGB(l+4, 0, 0, 0);
+                  }
+
+                  leds.flush();
+                  // Microseconds
+                  usleep(100000);
+
+                   if (i == 10)
+                  {
+                    leds.setRGB(j, 0, 0, 0);
+                    leds.setRGB(j+1, 0, 0, 0);
+                    leds.setRGB(j+2, 0, 0, 0);
+                    leds.setRGB(j+3, 0, 0, 0);
+
+                    leds.setRGB(j+10, 0, 0, 0);
+                    leds.setRGB((j-10)+1, 0, 0, 0);
+                    leds.setRGB((j-10)+2, 0, 0, 0);
+                    leds.setRGB((j-10)+3, 0, 0, 0);
+
+
+                    leds.setRGB(j-20, 0, 0, 0);
+                    leds.setRGB((j-20)+1, 0, 0, 0);
+                    leds.setRGB((j-20)+2, 0, 0, 0);
+                    leds.setRGB((j-20)+3, 0, 0, 0);
+
+                    leds.setRGB(l, 0, 0, 0);
+                    leds.setRGB(l+1, 0, 0, 0);
+                    leds.setRGB(l+2, 0, 0, 0);
+                    leds.setRGB(l+3, 0, 0, 0);
+
+
+                    i+=1;
+                    j-=1;
+                    l-=1;
+
+                    leds.flush();
+                    // Microseconds
+                    usleep(100000);
+                  }
+                }
+              
+
+               // for(int i = )
+                
+                /*int l = front_left_beam_end;
+                int k = front_right_beam_end;
+                int j = back_left_beam_end;
+
+                for (int i = front_right_beam_end; i >= back_right_beam_end;)
+                {
+                  // Terminate goal if preempted, timeout is reached, or ros fails
+                  if(as_.isPreemptRequested() || timeout || !ros::ok()) { break; }
+
+                  if (i == back_right_beam_end)
+                  {
+                    leds.setHSV(i, 240, 1, .1);
+                    leds.setHSV(i-1, 240, 1, .1);
+                    leds.setHSV(i-2, 240, 1, .1);
+                    leds.setHSV(i-3, 240, 1, .1);
+
+                    leds.setHSV(l, 240, 1, .1);
+                    leds.setHSV(l-1, 240, 1, .1);
+                    leds.setHSV(l-2, 240, 1, .1);
+                    leds.setHSV(l-3, 240, 1, .1);
+
+                    leds.setHSV(k, 240, 1, .1);
+                    leds.setHSV(k+1, 240, 1, .1);
+                    leds.setHSV(k+2, 240, 1, .1);
+                    leds.setHSV(k+3, 240, 1, .1);
+
+                    leds.setHSV(j, 240, 1, .1);
+                    leds.setHSV(j+1, 240, 1, .1);
+                    leds.setHSV(j+2, 240, 1, .1);
+                    leds.setHSV(j+3, 240, 1, .1);
+
+                    i-=4;
+                    l-=4;
+                    k+=4;
+                    j+=4;
+                  }
+                  else
+                  {
+                    leds.setHSV(i, 240, 1, .1);
+                    leds.setHSV(l, 240, 1, .1);
+                    leds.setHSV(k, 240, 1, .1);
+                    leds.setHSV(j, 240, 1, .1);
+                    i-=1;
+                    l-=1;
+                    k+=1;
+                    j+=1;
+                  }
+
+                  if (i < back_right_beam_end)
+                  {
+                    leds.setRGB(i-4, 0, 0, 0);
+                    leds.setRGB(l-4, 0, 0, 0);
+                    leds.setRGB(k+4, 0, 0, 0);
+                    leds.setRGB(j+4, 0, 0, 0);
+                  }
+
+                  leds.flush();
+                  // Microseconds
+                  usleep(100000);
+
+                  if (i == back_right_beam_end)
+                  {
+                    leds.setRGB(i, 0, 0, 0);
+                    leds.setRGB(i-1, 0, 0, 0);
+                    leds.setRGB(i-2, 0, 0, 0);
+                    leds.setRGB(i-3, 0, 0, 0);
+
+                    leds.setRGB(l, 0, 0, 0);
+                    leds.setRGB(l-1, 0, 0, 0);
+                    leds.setRGB(l-2, 0, 0, 0);
+                    leds.setRGB(l-3, 0, 0, 0);
+
+                    leds.setRGB(k, 0, 0, 0);
+                    leds.setRGB(k+1, 0, 0, 0);
+                    leds.setRGB(k+2, 0, 0, 0);
+                    leds.setRGB(k+3, 0, 0, 0);
+
+                    leds.setRGB(j, 0, 0, 0);
+                    leds.setRGB(j+1, 0, 0, 0);
+                    leds.setRGB(j+2, 0, 0, 0);
+                    leds.setRGB(j+3, 0, 0, 0);
+
+                    i+=1;
+                    l+=1;
+                    k-=1;
+                    j-=1;
+
+                    leds.flush();
+                    // Microseconds
+                    usleep(100000);
+                  }
+                }*/
+              }
+              break;
+            }
+            
           // Down
           case bwi_msgs::LEDAnimations::DOWN:
             {

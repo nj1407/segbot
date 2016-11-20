@@ -34,12 +34,14 @@ int main (int argc, char **argv)
   ros::NodeHandle privateNode("~");
 
   int type;
-  privateNode.param<int>("type",type,2);
+  privateNode.param<int>("type",type,8);
 
   int timeout;
   privateNode.param<int>("timeout",timeout,10);
 
   actionlib::SimpleActionClient<bwi_msgs::LEDControlAction> ac("led_control_server", true);
+  
+
 
   ROS_INFO("Waiting for action server to start.");
   ac.waitForServer();
@@ -78,6 +80,14 @@ int main (int argc, char **argv)
               goal.type.led_animations = bwi_msgs::LEDAnimations::NEED_ASSIST;
               break;
             }
+	case 8: { 
+			  goal.type.led_animations = bwi_msgs::LEDAnimations::FORWARD;
+			  break;
+			}
+	case 9: { 
+			  goal.type.led_animations = bwi_msgs::LEDAnimations::TEST_VALUES;
+			  break;
+			}
   }
 
   goal.timeout = ros::Duration(timeout);
