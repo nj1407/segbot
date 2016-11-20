@@ -86,7 +86,7 @@ void pose_cb(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg)
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "turn_monitor");
+    ros::init(argc, argv, "blocked_monitor");
     ros::NodeHandle n;
 
     ros::Rate loop_rate(30);
@@ -129,19 +129,24 @@ int main(int argc, char **argv)
         // Iterates through the first half of points in the global path and determines if any major
         // changes in orientation are coming.
         //ROS_INFO_STREAM(r_goal.status_list[0].status);
-        if(current_path.poses.size() == 0 && r_goal.status_list[0].status == 4 ){
-                  // && r_goal.status == 4  
-                    goal.type.led_animations = bwi_msgs::LEDAnimations::BLOCKED;
-                    gui_srv.request.type = 0; 
-                    gui_srv.request.message = "Blocked"; 
-                    gui_client.call(gui_srv);
+      if(heard_goal == true){ 
+		if(current_path.poses.size() == 0 && r_goal.status_list[0].status == 4 ){
+				  // && r_goal.status == 4  
+					goal.type.led_animations = bwi_msgs::LEDAnimations::BLOCKED;
+					goal.timeout = ros::Duration(7);
+					ac.sendGoal(goal);
+					gui_srv.request.type = 0; 
+					gui_srv.request.message = "Blocked"; 
+					gui_client.call(gui_srv);
 
-                    speak_srv.request.message = "Blocked Please clear a path for me";
-                    speak_message_client.call(speak_srv);  
-                    ROS_INFO("blocked");
-              
-        }
-        
+					speak_srv.request.message = "Blocked Please clear a path for me";
+					speak_message_client.call(speak_srv);  
+					ROS_INFO("blocked"); 
+		}
+		
+		heard_goal = false;
+	}
+        ac.cancelAllGoals();
         loop_rate.sleep();
     }
 
