@@ -130,23 +130,22 @@ int main(int argc, char **argv)
         // changes in orientation are coming.
         //ROS_INFO_STREAM(r_goal.status_list[0].status);
       if(heard_goal == true){ 
-		if(current_path.poses.size() == 0 && r_goal.status_list[0].status == 4 ){
-				  // && r_goal.status == 4  
-					goal.type.led_animations = bwi_msgs::LEDAnimations::BLOCKED;
-					goal.timeout = ros::Duration(7);
-					ac.sendGoal(goal);
-					gui_srv.request.type = 0; 
-					gui_srv.request.message = "Blocked"; 
-					gui_client.call(gui_srv);
+        if(current_path.poses.size() == 0 && r_goal.status_list[0].status == 4 ){
+                  // && r_goal.status == 4  
+                    goal.type.led_animations = bwi_msgs::LEDAnimations::BLOCKED;
+                    goal.timeout = ros::Duration(7);
+                    ac.sendGoal(goal);
+                    gui_srv.request.type = 0; 
+                    gui_srv.request.message = "Blocked"; 
+                    gui_client.call(gui_srv);
 
-					speak_srv.request.message = "Blocked Please clear a path for me";
-					speak_message_client.call(speak_srv);  
-					ROS_INFO("blocked"); 
-		}
-		
-		heard_goal = false;
-	}
-        ac.cancelAllGoals();
+                    speak_srv.request.message = "Blocked Please clear a path for me";
+                    speak_message_client.call(speak_srv);  
+                    ROS_INFO("blocked"); 
+        }
+        
+        heard_goal = false;
+    }
         loop_rate.sleep();
     }
 
